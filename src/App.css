@@ -306,3 +306,18 @@ body { font-family: 'Cormorant Garamond', serif; background: var(--cream); color
   margin-top:40px; font-size:.75rem; color:rgba(74,48,64,.3);
   letter-spacing:.2em; text-transform:uppercase;
 }
+
+/* ── Music button ──────────────────────────────── */
+.music-btn {
+  position: fixed; top: 16px; left: 16px; z-index: 999;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: white; border: 1.5px solid var(--pink-light);
+  box-shadow: 0 4px 16px rgba(200,100,130,.2);
+  cursor: pointer; font-size: 1.2rem; color: var(--pink-deep);
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; line-height: 1; transition: all .3s;
+}
+.music-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(200,100,130,.35); }
+.music-btn.playing { background: var(--pink-soft); }
+.music-btn.playing { animation: float 2s ease-in-out infinite; }
+.music-label { font-size: .5rem; color: var(--pink); margin-top: 1px; }

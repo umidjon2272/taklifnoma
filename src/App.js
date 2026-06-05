@@ -50,20 +50,44 @@ function Petals() {
   return (
     <div className="petals-wrap" aria-hidden="true">
       {petals.map((p) => (
-        <div
-          key={p.id}
-          className="petal"
-          style={{
-            left: p.left,
-            animationDelay: p.delay,
-            animationDuration: p.duration,
-            width: p.size,
-            height: p.size,
-            "--rot": p.rotate,
-          }}
-        />
+        <div key={p.id} className="petal" style={{
+          left: p.left, animationDelay: p.delay, animationDuration: p.duration,
+          width: p.size, height: p.size, "--rot": p.rotate,
+        }} />
       ))}
     </div>
+  );
+}
+
+// ── Musiqa tugmasi ────────────────────────────────────
+function MusicButton() {
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    // Romantik background music - YouTube embed orqali emas, Web Audio API bilan
+    // Biz oddiy audio URL ishlatamiz
+    audioRef.current = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.35;
+    return () => { if (audioRef.current) audioRef.current.pause(); };
+  }, []);
+
+  const toggle = () => {
+    if (!audioRef.current) return;
+    if (playing) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(() => { });
+    }
+    setPlaying(!playing);
+  };
+
+  return (
+    <button className={`music-btn ${playing ? "playing" : ""}`} onClick={toggle} title={playing ? "Musiqani o'chirish" : "Musiqani yoqish"}>
+      {playing ? "♪" : "♪"}
+      <span className="music-label">{playing ? "●" : "○"}</span>
+    </button>
   );
 }
 
@@ -94,15 +118,15 @@ function Hero() {
   return (
     <section className="hero" ref={ref}>
       <div className="hero-img-wrap">
-        <img src="/couple.jpg" alt="Baxroma va Sirojiddin" className="hero-img" />
+        <img src="/couple.jpg" alt="Bahrona va Sirojiddin" className="hero-img" />
         <div className="hero-overlay" />
       </div>
       <div className={`hero-text ${visible ? "fade-in" : ""}`}>
         <p className="hero-script">nikoh to'yiga taklif</p>
         <h2 className="hero-names">
-          <span className="name-line">BAXROMA</span>
+          <span className="name-line"> SIROJIDDIN</span>
           <span className="hero-va">va</span>
-          <span className="name-line">SIROJIDDIN</span>
+          <span className="name-line">BAHRONA</span>
         </h2>
         <div className="hero-divider"><span>♥</span></div>
         <p className="scroll-hint">PASTGA SURING ↓</p>
@@ -165,18 +189,21 @@ function Calendar() {
 
 function Venue() {
   const [ref, visible] = useVisible();
+  // Shuhrat Restaurant koordinatalari
+  const yandexUrl = "https://yandex.uz/maps/?ll=69.2842%2C41.3123&z=16&text=Shuhrat+Restaurant+Toshkent";
+  const googleUrl = "https://maps.google.com/?q=41.3123,69.2842";
   return (
     <section className="venue-section" ref={ref}>
       <div className={`venue-wrap ${visible ? "slide-up" : ""}`}>
         <p className="section-script">manzil</p>
         <h3 className="venue-title">To'y manzili</h3>
         <div className="venue-icon">🏛️</div>
-        <p className="venue-name">"ROHAT"<br />TANTANALAR SAROYI</p>
+        <p className="venue-name">"SHUHRAT"<br />RESTORАНИ</p>
         <p className="venue-time">Vaqti: 18:00</p>
-        <p className="venue-addr">Manzil: Chilonzor tumani,<br />Arnasoy ko'chasi 7/2</p>
+        <p className="venue-addr">Novza metro yaqini,<br />Toshkent</p>
         <div className="venue-btns">
-          <a href="https://yandex.uz/maps/?text=Rohat+tantanalar+saroyi+Toshkent" target="_blank" rel="noreferrer" className="map-btn">YANDEX XARITASI</a>
-          <a href="https://maps.google.com/?q=Rohat+tantanalar+saroyi+Toshkent" target="_blank" rel="noreferrer" className="map-btn">GOOGLE MAPS</a>
+          <a href={yandexUrl} target="_blank" rel="noreferrer" className="map-btn">YANDEX XARITASI</a>
+          <a href={googleUrl} target="_blank" rel="noreferrer" className="map-btn">GOOGLE MAPS</a>
         </div>
       </div>
     </section>
@@ -201,8 +228,6 @@ function GiftCard() {
         <div className="card-visual">
           <img src="/couple.jpg" alt="" className="card-photo" />
           <div className="card-overlay-content">
-            <div className="card-label">QABUL QILUVCHI</div>
-            <div className="card-name">SIROJIDDIN</div>
             <div className="card-num-label">KARTA RAQAMI</div>
             <div className="card-number">{cardNum}</div>
           </div>
@@ -249,19 +274,23 @@ function CountdownSection() {
 
 export default function App() {
   const [unlocked, setUnlocked] = useState(false);
+
   return (
     <div className="app">
       {!unlocked ? (
         <LockScreen onUnlock={() => setUnlocked(true)} />
       ) : (
-        <main className="main">
-          <Hero />
-          <Message />
-          <Calendar />
-          <Venue />
-          <GiftCard />
-          <CountdownSection />
-        </main>
+        <>
+          <MusicButton />
+          <main className="main">
+            <Hero />
+            <Message />
+            <Calendar />
+            <Venue />
+            <GiftCard />
+            <CountdownSection />
+          </main>
+        </>
       )}
     </div>
   );
