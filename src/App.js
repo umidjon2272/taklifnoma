@@ -123,9 +123,9 @@ function Hero() {
       <div className={`hero-text ${visible ? "fade-in" : ""}`}>
         <p className="hero-script">nikoh to'yiga taklif</p>
         <h2 className="hero-names">
-          <span className="name-line">BAHRONA</span>
-          <span className="hero-va">va</span>
           <span className="name-line">SIROJIDDIN</span>
+          <span className="hero-va">va</span>
+          <span className="name-line">BAHRONA</span>
         </h2>
         <div className="hero-divider"><span>♥</span></div>
         <p className="scroll-hint">PASTGA SURING ↓</p>
