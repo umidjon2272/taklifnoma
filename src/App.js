@@ -59,44 +59,43 @@ function Petals() {
   );
 }
 
-// ── Musiqa tugmasi ────────────────────────────────────
-function MusicButton() {
-  const [playing, setPlaying] = useState(false);
-  const audioRef = useRef(null);
+// ── Global audio ──────────────────────────────────────
+const MUSIC_URL = "https://cdn.pixabay.com/audio/2022/10/16/audio_12950e1d67.mp3";
 
-  useEffect(() => {
-    // Romantik background music - YouTube embed orqali emas, Web Audio API bilan
-    // Biz oddiy audio URL ishlatamiz
-    audioRef.current = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.35;
-    return () => { if (audioRef.current) audioRef.current.pause(); };
-  }, []);
+function MusicButton({ audioRef }) {
+  const [playing, setPlaying] = useState(true);
 
   const toggle = () => {
     if (!audioRef.current) return;
     if (playing) {
       audioRef.current.pause();
+      setPlaying(false);
     } else {
-      audioRef.current.play().catch(() => { });
+      audioRef.current.play().catch(() => {});
+      setPlaying(true);
     }
-    setPlaying(!playing);
   };
 
   return (
-    <button className={`music-btn ${playing ? "playing" : ""}`} onClick={toggle} title={playing ? "Musiqani o'chirish" : "Musiqani yoqish"}>
-      {playing ? "♪" : "♪"}
-      <span className="music-label">{playing ? "●" : "○"}</span>
+    <button className={`music-btn ${playing ? "playing" : ""}`} onClick={toggle} title={playing ? "O'chirish" : "Yoqish"}>
+      {playing ? "🎵" : "🔇"}
     </button>
   );
 }
 
-function LockScreen({ onUnlock }) {
+function LockScreen({ onUnlock, audioRef }) {
   const [shaking, setShaking] = useState(false);
+
   const handleClick = () => {
     setShaking(true);
+    // Musiqa lock bosishda boshlanadi
+    if (audioRef.current) {
+      audioRef.current.volume = 0.18;
+      audioRef.current.play().catch(() => {});
+    }
     setTimeout(() => { setShaking(false); onUnlock(); }, 400);
   };
+
   return (
     <div className="lock-screen">
       <Petals />
@@ -124,9 +123,9 @@ function Hero() {
       <div className={`hero-text ${visible ? "fade-in" : ""}`}>
         <p className="hero-script">nikoh to'yiga taklif</p>
         <h2 className="hero-names">
-          <span className="name-line"> SIROJIDDIN</span>
-          <span className="hero-va">va</span>
           <span className="name-line">BAHRONA</span>
+          <span className="hero-va">va</span>
+          <span className="name-line">SIROJIDDIN</span>
         </h2>
         <div className="hero-divider"><span>♥</span></div>
         <p className="scroll-hint">PASTGA SURING ↓</p>
@@ -189,7 +188,6 @@ function Calendar() {
 
 function Venue() {
   const [ref, visible] = useVisible();
-  // Shuhrat Restaurant koordinatalari
   const yandexUrl = "https://yandex.uz/maps/?ll=69.2842%2C41.3123&z=16&text=Shuhrat+Restaurant+Toshkent";
   const googleUrl = "https://maps.google.com/?q=41.3123,69.2842";
   return (
@@ -274,14 +272,23 @@ function CountdownSection() {
 
 export default function App() {
   const [unlocked, setUnlocked] = useState(false);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    const audio = new Audio(MUSIC_URL);
+    audio.loop = true;
+    audio.volume = 0.18;
+    audioRef.current = audio;
+    return () => { audio.pause(); audio.src = ""; };
+  }, []);
 
   return (
     <div className="app">
       {!unlocked ? (
-        <LockScreen onUnlock={() => setUnlocked(true)} />
+        <LockScreen onUnlock={() => setUnlocked(true)} audioRef={audioRef} />
       ) : (
         <>
-          <MusicButton />
+          <MusicButton audioRef={audioRef} />
           <main className="main">
             <Hero />
             <Message />
