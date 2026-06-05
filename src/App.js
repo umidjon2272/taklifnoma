@@ -60,7 +60,7 @@ function Petals() {
 }
 
 // ── Global audio ──────────────────────────────────────
-const MUSIC_URL = "https://cdn.pixabay.com/audio/2022/10/16/audio_12950e1d67.mp3";
+const MUSIC_URL = "/music.mp3";
 
 function MusicButton({ audioRef }) {
   const [playing, setPlaying] = useState(true);
